@@ -5,6 +5,10 @@ using UnityEngine;
 public class ObjectStorage
 {
     public List<Object> objects;
+
+    public ObjectStorage() {
+        objects = new List<Object>();
+    }
     public int getNumberOfObjects() {
         return objects.Count;
     }

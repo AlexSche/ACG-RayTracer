@@ -4,11 +4,12 @@ public class SceneCreator : MonoBehaviour
 {
     private Texture2D rendererTexture;
     private int amountOfObjects = 500;
-    public ObjectStorage objectStorage;
+    private ObjectStorage objectStorage;
     public Material material;
     void Start()
     {
         rendererTexture = new Texture2D(Screen.height, Screen.width);
+        objectStorage = new ObjectStorage();
         createScene();
     }
 
@@ -26,7 +27,7 @@ public class SceneCreator : MonoBehaviour
         sphere.transform.position = position;
         sphere.transform.localScale *= 50;
         sphere.GetComponent<MeshRenderer>().material = material;
-        //objectStorage.addObject(sphere);
+        objectStorage.addObject(sphere);
     }
 
     private void addLightning()
