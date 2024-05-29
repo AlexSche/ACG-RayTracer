@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Raytracer : MonoBehaviour
@@ -18,10 +19,9 @@ public class Raytracer : MonoBehaviour
         {
             for (int y = 0; y < cameraRT.resYinPixel; y++)
             {
-                Vector3 ray = cameraRT.calculateRayForPoint(new Point(x,y));
-                Debug.Log(ray); // Error: ray is always (0,0,0);
-                ray = Vector3.Normalize(ray);
+                Vector3 ray = cameraRT.calculateRayForPoint(new Point(x, y));
                 //Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + ray, Color.cyan, 300f);
+                ray = Vector3.Normalize(ray);
                 // raytrace
                 // putpixel
             }

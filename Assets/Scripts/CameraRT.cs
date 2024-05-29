@@ -19,7 +19,7 @@ public class CameraRT : MonoBehaviour
     private Point point;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         // 
         up = transform.up;
@@ -30,8 +30,6 @@ public class CameraRT : MonoBehaviour
         canvasY = canvasSize.y;
         //resXinPixel = (int) canvasSize.x * 100; // one unity scale equal 100 pixels
         //resYinPixel = (int) canvasSize.y * 100;
-
-        Debug.Log("resolution: " + resXinPixel + "x" + resYinPixel);
 
         // Bestimmung der Sehstrahlen:
         camToCenterOfCanvas = centerOfCanvas - position;
@@ -56,7 +54,8 @@ public class CameraRT : MonoBehaviour
         scrny = scrny * my;
 
         calculateFirstRay();
-        displayAllVector(); // used to debug the calculated vector
+
+        displayAllVector(); // show all calculated vector for debugging the scene
     }
 
     private void calculateFirstRay()
@@ -65,12 +64,12 @@ public class CameraRT : MonoBehaviour
     }
 
     public Vector3 calculateRayForPoint(Point point) {
-        Vector3 ray = firstRay + scrnx * point.getX() + scrny * point.getY();
+        Vector3 ray = firstRay + (scrnx * point.getX()) - (scrny * point.getY());
         return ray;
     }
 
     // displays all calculated vector
-    private void displayAllVector()
+    public void displayAllVector()
     {
         // up
         Debug.DrawLine(position, position + up, Color.green, 10f);
