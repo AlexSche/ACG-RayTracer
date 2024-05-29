@@ -2,11 +2,8 @@ using UnityEngine;
 
 public class CameraRT : MonoBehaviour
 {
-    public GameObject canvas;
-    private float canvasX;
-    private float canvasY;
-    public int resXinPixel;
-    public int resYinPixel;
+    private int resXinPixel;
+    private int resYinPixel;
     private Vector3 up; // Orientierung der Kamera
     private Vector3 position; // Vorlesung Variable e - Kameraort
     private Vector3 centerOfCanvas; // Vorlesung Variable l - Mittelpunkt der Bildebenenmitte
@@ -21,15 +18,12 @@ public class CameraRT : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        // 
         up = transform.up;
         position = transform.position;
-        centerOfCanvas = canvas.transform.position;
-        Vector3 canvasSize = canvas.gameObject.GetComponent<MeshRenderer>().bounds.size;
-        canvasX = canvasSize.x;
-        canvasY = canvasSize.y;
-        //resXinPixel = (int) canvasSize.x * 100; // one unity scale equal 100 pixels
-        //resYinPixel = (int) canvasSize.y * 100;
+        centerOfCanvas = new Vector3(position.x, position.y, position.z +10);
+
+        resXinPixel = Screen.width;
+        resYinPixel = Screen.height;
 
         // Bestimmung der Sehstrahlen:
         camToCenterOfCanvas = centerOfCanvas - position;
@@ -41,8 +35,8 @@ public class CameraRT : MonoBehaviour
         scrny = Vector3.Cross(scrnx, camToCenterOfCanvas);
         scrny = Vector3.Normalize(scrny);
 
-        x = scrnx * (canvasSize.x / 2);
-        y = scrny * (canvasSize.y / 2);
+        x = scrnx * (resXinPixel / 2);
+        y = scrny * (resYinPixel / 2);
 
         // scrnx und scrny ein pixel auf der Bildebene lang machen
         float mx = 2 * Vector3.Magnitude(x) / resXinPixel;
@@ -54,8 +48,7 @@ public class CameraRT : MonoBehaviour
         scrny = scrny * my;
 
         calculateFirstRay();
-
-        displayAllVector(); // show all calculated vector for debugging the scene
+        //displayAllVector(); // show all calculated vector for debugging the scene
     }
 
     private void calculateFirstRay()

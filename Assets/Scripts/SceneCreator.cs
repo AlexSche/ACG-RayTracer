@@ -2,17 +2,13 @@ using UnityEngine;
 
 public class SceneCreator : MonoBehaviour
 {
-    private int sceneSizeX;
-    private int sceneSizeY;
-    private int amountOfObjects = 15;
+    private Texture2D rendererTexture;
+    private int amountOfObjects = 0;
     public ObjectStorage objectStorage;
-    public Material material;
     void Start()
     {
-        Vector3 canvasSize = GetComponent<MeshRenderer>().bounds.size;
-        sceneSizeX = (int)canvasSize.x;
-        sceneSizeY = (int)canvasSize.y;
-
+        rendererTexture = new Texture2D(Screen.height, Screen.width);
+        Debug.Log(Screen.width +"x"+ Screen.height);
         createScene();
     }
 
@@ -28,7 +24,7 @@ public class SceneCreator : MonoBehaviour
     {
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphere.transform.position = position;
-        sphere.GetComponent<MeshRenderer>().material = material;
+        //sphere.GetComponent<MeshRenderer>().material = material;
         //objectStorage.addObject(sphere);
     }
 
@@ -39,6 +35,6 @@ public class SceneCreator : MonoBehaviour
 
     private Vector3 generateRandomPosition()
     {
-        return new Vector3(Random.Range(0, sceneSizeX - 1), Random.Range(0, sceneSizeY - 1), transform.position.z);
+        return new Vector3(Random.Range(0, 0), Random.Range(0, 0), transform.position.z);
     }
 }
