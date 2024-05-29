@@ -20,7 +20,7 @@ public class CameraRT : MonoBehaviour
     {
         up = transform.up;
         position = transform.position;
-        centerOfCanvas = new Vector3(position.x, position.y, position.z +10);
+        centerOfCanvas = new Vector3(position.x, position.y, position.z +1000);
 
         resXinPixel = Screen.width;
         resYinPixel = Screen.height;

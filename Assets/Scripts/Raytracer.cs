@@ -4,6 +4,7 @@ using UnityEngine;
 public class Raytracer : MonoBehaviour
 {
     private CameraRT cameraRT;
+    private int maxDepth = 2;
     void Start()
     {
         cameraRT = GetComponent<CameraRT>();
@@ -22,6 +23,27 @@ public class Raytracer : MonoBehaviour
                 // raytrace
                 // putpixel
             }
+        }
+    }
+
+    private void raytrace(Vector3 ray, int depth, Color color) {
+        if (depth > maxDepth) {
+            color = Color.black;
+            return;
+        } else {
+            //Schneide Strahl mit allen Objekten und ermittle nächstgelegenen Schnittpunkt;
+            //if kein Schnittpunkt { Col=background; return}
+            /*
+            else
+            {
+            LocalColor=Farbe aus lokalem Beleuchtungmodell (Phong);
+            Ermittle ideal reflektierten Strahl;
+            Raytrace(ideal reflektierter Strahl, Depth+1, ReflCol);
+            Ermittle ideal transmittierten Strahl;
+            Raytrace(ideal transmittierter Strahl, Depth+1, TransCol);
+            Kombiniere(Col, ReflCol, TransCol);
+            }
+            */
         }
     }
 }
