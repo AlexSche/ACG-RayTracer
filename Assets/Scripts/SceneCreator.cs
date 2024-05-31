@@ -2,13 +2,12 @@ using UnityEngine;
 
 public class SceneCreator : MonoBehaviour
 {
-    private Texture2D rendererTexture;
+    
     private int amountOfObjects = 500;
     private ObjectStorage objectStorage;
     public Material material;
     void Start()
     {
-        rendererTexture = new Texture2D(Screen.height, Screen.width);
         objectStorage = new ObjectStorage();
         createScene();
     }

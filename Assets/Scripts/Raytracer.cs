@@ -1,13 +1,20 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Raytracer : MonoBehaviour
 {
     private CameraRT cameraRT;
+    private Texture2D rendererTexture;
     private int maxDepth = 2;
+    private int resolutionX = 0;
+    private int resolutionY = 0;
     void Start()
     {
         cameraRT = GetComponent<CameraRT>();
+        resolutionX = Screen.width;
+        resolutionY = Screen.height;
+        rendererTexture = new Texture2D(resolutionX, resolutionY);
         calculatePicture();
     }
 
@@ -22,15 +29,21 @@ public class Raytracer : MonoBehaviour
                 ray = Vector3.Normalize(ray);
                 // raytrace
                 // putpixel
+                rendererTexture.SetPixel(x, y, testraytracer(ray));
             }
         }
+        rendererTexture.Apply();
     }
 
-    private void raytrace(Vector3 ray, int depth, Color color) {
-        if (depth > maxDepth) {
+    private void raytrace(Vector3 ray, int depth, Color color)
+    {
+        if (depth > maxDepth)
+        {
             color = Color.black;
             return;
-        } else {
+        }
+        else
+        {
             //Schneide Strahl mit allen Objekten und ermittle nächstgelegenen Schnittpunkt;
             //if kein Schnittpunkt { Col=background; return}
             /*
@@ -45,6 +58,24 @@ public class Raytracer : MonoBehaviour
             }
             */
         }
+    }
+
+    private Color testraytracer(Vector3 ray)
+    {
+        //if ray hits something
+        if (false)
+        {
+            return Color.white;
+        }
+        else
+        {
+            return Color.black;
+        }
+    }
+
+    // draw the picture
+    private void OnGUI() {
+        GUI.DrawTexture(new Rect(0, 0, resolutionX, resolutionY), rendererTexture);
     }
 }
 
