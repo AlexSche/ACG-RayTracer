@@ -12,8 +12,8 @@ public class Raytracer : MonoBehaviour
     void Start()
     {
         cameraRT = GetComponent<CameraRT>();
-        resolutionX = Screen.width;
-        resolutionY = Screen.height;
+        resolutionX = cameraRT.resXinPixel;
+        resolutionY = cameraRT.resYinPixel;
         rendererTexture = new Texture2D(resolutionX, resolutionY);
         calculatePicture();
     }

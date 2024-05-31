@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class CameraRT : MonoBehaviour
 {
-    private int resXinPixel;
-    private int resYinPixel;
+    public int resXinPixel;
+    public int resYinPixel;
     private Vector3 up; // Orientierung der Kamera
     private Vector3 position; // Vorlesung Variable e - Kameraort
     private Vector3 centerOfCanvas; // Vorlesung Variable l - Mittelpunkt der Bildebenenmitte
@@ -49,6 +49,11 @@ public class CameraRT : MonoBehaviour
 
         calculateFirstRay();
         //displayAllVector(); // show all calculated vector for debugging the scene
+    }
+
+    public CameraRT(int width, int height) {
+        resXinPixel = width;
+        resYinPixel = height;
     }
 
     private void calculateFirstRay()
