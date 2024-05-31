@@ -30,8 +30,6 @@ public class Raytracer : MonoBehaviour
                 Vector3 ray = cameraRT.calculateRayForPoint(new Point(x, y));
                 Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + ray, Color.cyan, 300f);
                 ray = Vector3.Normalize(ray);
-                //raytrace(ray, 0, Color.black);
-                // putpixel
                 Color color = raytrace(ray,0,Color.black);
                 rendererTexture.SetPixel(x, y, color);
             }
@@ -53,7 +51,6 @@ public class Raytracer : MonoBehaviour
                 return color = Color.white;
             } else {
                 return color = Color.black; //if kein Schnittpunkt { Col=background; return}
-                //return;
             }
             /*
             else
