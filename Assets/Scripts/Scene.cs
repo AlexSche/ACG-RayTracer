@@ -6,14 +6,15 @@ public class Scene
     private int amountOfObjects = 10;
     private int resolutionX = 640;
     private int resolutionY = 480;  
+    private int depth = 0;
     private Transform transform;
     public ObjectStorage objectStorage;
 
-    public Scene(int resX, int resY, Transform cameraLocation, int amountOfObjects) {
+    public Scene(int resX, int resY, int depth, int amountOfObjects) {
         resolutionX = resX;
         resolutionY = resY;
         this.amountOfObjects = amountOfObjects;
-        transform = cameraLocation; 
+        this.depth = depth;
         objectStorage = new ObjectStorage();
         createScene();
     }
@@ -36,11 +37,11 @@ public class Scene
 
     private void addLightning()
     {
-
+        // spawn lightning in the top left corner
     }
 
     private Vector3 generateRandomPosition()
     {
-        return new Vector3(Random.Range(-(Screen.width/2), Screen.width/2), Random.Range(-(Screen.height/2), Screen.height/2), Random.Range(transform.position.z, 1000));
+        return new Vector3(Random.Range(-(Screen.width/2), Screen.width/2), Random.Range(-(Screen.height/2), Screen.height/2), Random.Range(0, depth));
     }
 }

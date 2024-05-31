@@ -4,6 +4,7 @@ public class CameraRT : MonoBehaviour
 {
     public int resXinPixel;
     public int resYinPixel;
+    public int depth;
     private Vector3 up; // Orientierung der Kamera
     private Vector3 position; // Vorlesung Variable e - Kameraort
     private Vector3 centerOfCanvas; // Vorlesung Variable l - Mittelpunkt der Bildebenenmitte
@@ -18,12 +19,12 @@ public class CameraRT : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        up = transform.up;
-        position = transform.position;
-        centerOfCanvas = new Vector3(position.x, position.y, position.z +1000);
-
         resXinPixel = Screen.width;
         resYinPixel = Screen.height;
+        depth = 1000;
+        up = transform.up;
+        position = transform.position;
+        centerOfCanvas = new Vector3(position.x, position.y, position.z + depth);
 
         // Bestimmung der Sehstrahlen:
         camToCenterOfCanvas = centerOfCanvas - position;
@@ -51,7 +52,8 @@ public class CameraRT : MonoBehaviour
         //displayAllVector(); // show all calculated vector for debugging the scene
     }
 
-    public CameraRT(int width, int height) {
+    public CameraRT(int width, int height)
+    {
         resXinPixel = width;
         resYinPixel = height;
     }
@@ -61,7 +63,8 @@ public class CameraRT : MonoBehaviour
         firstRay = (centerOfCanvas - position) - scrnx * resXinPixel / 2 + scrny * resYinPixel / 2;
     }
 
-    public Vector3 calculateRayForPoint(Point point) {
+    public Vector3 calculateRayForPoint(Point point)
+    {
         Vector3 ray = firstRay + (scrnx * point.getX()) - (scrny * point.getY());
         return ray;
     }
