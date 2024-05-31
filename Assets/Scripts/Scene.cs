@@ -1,18 +1,18 @@
 using UnityEngine;
 
-public class SceneCreator
+public class Scene
 {
-    
-    private int amountOfObjects = 500;
-    private int resolutionX = 0;
-    private int resolutionY = 0;  
+    //set default values - values are set in constructor
+    private int amountOfObjects = 10;
+    private int resolutionX = 640;
+    private int resolutionY = 480;  
     private Transform transform;
-    private ObjectStorage objectStorage;
-    public Material material;
+    public ObjectStorage objectStorage;
 
-    public SceneCreator(int resX, int resY, Transform cameraLocation) {
+    public Scene(int resX, int resY, Transform cameraLocation, int amountOfObjects) {
         resolutionX = resX;
         resolutionY = resY;
+        this.amountOfObjects = amountOfObjects;
         transform = cameraLocation; 
         objectStorage = new ObjectStorage();
         createScene();
@@ -31,7 +31,6 @@ public class SceneCreator
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphere.transform.position = position;
         sphere.transform.localScale *= 50;
-        sphere.GetComponent<MeshRenderer>().material = material;
         objectStorage.addObject(sphere);
     }
 

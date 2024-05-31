@@ -15,7 +15,7 @@ public class Raytracer : MonoBehaviour
         resolutionX = cameraRT.resXinPixel;
         resolutionY = cameraRT.resYinPixel;
         rendererTexture = new Texture2D(resolutionX, resolutionY);
-        SceneCreator sceneCreator = new SceneCreator(resolutionX, resolutionY, transform);
+        Scene scene = new Scene(resolutionX, resolutionY ,transform, 150);
         calculatePicture();
     }
 
