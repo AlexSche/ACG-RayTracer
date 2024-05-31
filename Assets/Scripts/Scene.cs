@@ -8,14 +8,14 @@ public class Scene
     private int resolutionY = 480;  
     private int depth = 0;
     private Transform transform;
-    public ObjectStorage objectStorage;
+    public GeometryObjectStorage geometryObjectStorage;
 
     public Scene(int resX, int resY, int depth, int amountOfObjects) {
         resolutionX = resX;
         resolutionY = resY;
         this.amountOfObjects = amountOfObjects;
         this.depth = depth;
-        objectStorage = new ObjectStorage();
+        geometryObjectStorage = new GeometryObjectStorage();
         createScene();
     }
 
@@ -29,11 +29,8 @@ public class Scene
 
     private void createSphereOnPosition(Vector3 position)
     {
-        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.transform.position = position;
-        sphere.transform.localScale *= 50;
-        sphere.AddComponent<SphereCollider>();
-        objectStorage.addObject(sphere);
+        SphereObject sphereObject = new SphereObject(position);
+        geometryObjectStorage.addObject(sphereObject);
     }
 
     private void addLightning()

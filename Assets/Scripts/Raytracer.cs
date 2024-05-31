@@ -17,7 +17,7 @@ public class Raytracer : MonoBehaviour
         resolutionX = cameraRT.resXinPixel;
         resolutionY = cameraRT.resYinPixel;
         rendererTexture = new Texture2D(resolutionX, resolutionY);
-        scene = new Scene(resolutionX, resolutionY, cameraRT.depth, 150);
+        scene = new Scene(resolutionX, resolutionY, cameraRT.depth, 10);
         calculatePicture();
     }
 
@@ -28,27 +28,33 @@ public class Raytracer : MonoBehaviour
             for (int y = 0; y < Screen.height; y++)
             {
                 Vector3 ray = cameraRT.calculateRayForPoint(new Point(x, y));
-                //Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + ray, Color.cyan, 300f);
+                Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + ray, Color.cyan, 300f);
                 ray = Vector3.Normalize(ray);
-                // raytrace
+                //raytrace(ray, 0, Color.black);
                 // putpixel
-                rendererTexture.SetPixel(x, y, testraytracer(ray));
+                Color color = raytrace(ray,0,Color.black);
+                rendererTexture.SetPixel(x, y, color);
             }
         }
         rendererTexture.Apply();
     }
 
-    private void raytrace(Vector3 ray, int depth, Color color)
+    private Color raytrace(Vector3 ray, int depth, Color color)
     {
         if (depth > maxDepth)
         {
-            color = Color.black;
-            return;
+            return color = Color.black;
+            //return;
         }
         else
         {
             //Schneide Strahl mit allen Objekten und ermittle nächstgelegenen Schnittpunkt;
-            //if kein Schnittpunkt { Col=background; return}
+            if(intersectObjects(null, cameraRT.position, ray, color) > 0) {
+                return color = Color.white;
+            } else {
+                return color = Color.black; //if kein Schnittpunkt { Col=background; return}
+                //return;
+            }
             /*
             else
             {
@@ -63,14 +69,14 @@ public class Raytracer : MonoBehaviour
         }
     }
 
-    private double intersectObjects(Object obj, Vector3 pos, Vector3 dir, Color col)
+    private double intersectObjects(GeometryObject obj, Vector3 pos, Vector3 dir, Color col)
     {
-        Object hitObject = null;
+        GeometryObject hitObject = null;
         double s, ss;
         Vector3 hit, normal;
         ss = (double)1E20; //FAR_AWAY
 
-        ObjectStorage objectStorage = scene.objectStorage;
+        GeometryObjectStorage objectStorage = scene.geometryObjectStorage;
 
         /* check ray intersection with all objects */
         objectStorage.objects.ForEach(anObj => {
@@ -80,8 +86,7 @@ public class Raytracer : MonoBehaviour
             /* special check used for reflections */
             if (anObj != obj) /* don't try source object */
             {
-                //s = anObj->Intersect(pos, ray); // Check intersaction
-                s = 0;
+                s = anObj.intersect(pos,dir); // Check intersaction
                 /* keep track of closest intersection */
                 if ((s > 0.0) && (s <= ss))
                 {
@@ -96,29 +101,20 @@ public class Raytracer : MonoBehaviour
         }
 
         /* find point of intersection */
-        //hit = pos + dir * ss;
+        hit = pos + dir * (float)ss;
 
         /* find normal */
-        //normal = hitObject->NormVector(hit);
+        normal = hitObject.normalizeVector(hit);
 
         /* find color at point of intersection */
         col = Color.white;
-        //Shade(hit, ray, normal, *anObjectHit, color);
 
-        return (ss);
+        //Shade(hit, ray, normal, *anObjectHit, color);
+        return ss;
     }
 
-    private Color testraytracer(Vector3 ray)
-    {
-        //if ray hits something
-        if (false)
-        {
-            return Color.white;
-        }
-        else
-        {
-            return Color.black;
-        }
+    private bool intersectWithUnityRay() {
+        return true;
     }
 
     // draws the picture

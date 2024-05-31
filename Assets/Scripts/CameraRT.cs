@@ -6,7 +6,7 @@ public class CameraRT : MonoBehaviour
     public int resYinPixel;
     public int depth;
     private Vector3 up; // Orientierung der Kamera
-    private Vector3 position; // Vorlesung Variable e - Kameraort
+    public Vector3 position; // Vorlesung Variable e - Kameraort
     private Vector3 centerOfCanvas; // Vorlesung Variable l - Mittelpunkt der Bildebenenmitte
     private Vector3 camToCenterOfCanvas; // Vorlesung Variable g - Vektor von Kamera nach Bildebenenmitte
     private Vector3 firstRay; // Vorlesung Variable f - erster Strahl durch Bildebene
