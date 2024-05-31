@@ -1,13 +1,19 @@
 using UnityEngine;
 
-public class SceneCreator : MonoBehaviour
+public class SceneCreator
 {
     
     private int amountOfObjects = 500;
+    private int resolutionX = 0;
+    private int resolutionY = 0;  
+    private Transform transform;
     private ObjectStorage objectStorage;
     public Material material;
-    void Start()
-    {
+
+    public SceneCreator(int resX, int resY, Transform cameraLocation) {
+        resolutionX = resX;
+        resolutionY = resY;
+        transform = cameraLocation; 
         objectStorage = new ObjectStorage();
         createScene();
     }
@@ -36,6 +42,6 @@ public class SceneCreator : MonoBehaviour
 
     private Vector3 generateRandomPosition()
     {
-        return new Vector3(Random.Range(-(Screen.width/2), Screen.width/2), Random.Range(-(Screen.height/2), Screen.height/2), transform.position.z);
+        return new Vector3(Random.Range(-(Screen.width/2), Screen.width/2), Random.Range(-(Screen.height/2), Screen.height/2), Random.Range(transform.position.z, 1000));
     }
 }

@@ -15,6 +15,7 @@ public class Raytracer : MonoBehaviour
         resolutionX = cameraRT.resXinPixel;
         resolutionY = cameraRT.resYinPixel;
         rendererTexture = new Texture2D(resolutionX, resolutionY);
+        SceneCreator sceneCreator = new SceneCreator(resolutionX, resolutionY, transform);
         calculatePicture();
     }
 
@@ -25,7 +26,7 @@ public class Raytracer : MonoBehaviour
             for (int y = 0; y < Screen.height; y++)
             {
                 Vector3 ray = cameraRT.calculateRayForPoint(new Point(x, y));
-                Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + ray, Color.cyan, 300f);
+                //Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + ray, Color.cyan, 300f);
                 ray = Vector3.Normalize(ray);
                 // raytrace
                 // putpixel
