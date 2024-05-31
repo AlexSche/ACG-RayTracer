@@ -1,7 +1,7 @@
 using UnityEngine;
 public class GeometryObject
 {
-    public virtual double intersect(Vector3 pos, Vector3 dir) {
+    public virtual double intersect(Ray ray) {
         return 0.0;
     }
 

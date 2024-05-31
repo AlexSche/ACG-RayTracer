@@ -29,9 +29,10 @@ public class Raytracer : MonoBehaviour
         {
             for (int y = 0; y < Screen.height; y++)
             {
-                Vector3 ray = cameraRT.calculateRayForPoint(new Point(x, y));
-                Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + ray, Color.cyan, 300f);
-                ray = Vector3.Normalize(ray);
+                Vector3 direction = cameraRT.calculateRayForPoint(new Point(x, y));
+                Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + direction, Color.cyan, 300f);
+                direction = Vector3.Normalize(direction);
+                Ray ray = new Ray(cameraRT.getPosition(), direction);
                 Color color = raytrace(ray,0,Color.black);
                 rendererTexture.SetPixel(x, y, color);
             }
@@ -42,7 +43,7 @@ public class Raytracer : MonoBehaviour
         rendererTexture.Apply();
     }
 
-    private Color raytrace(Vector3 ray, int depth, Color color)
+    private Color raytrace(Ray ray, int depth, Color color)
     {
         if (depth > maxDepth)
         {
@@ -52,7 +53,7 @@ public class Raytracer : MonoBehaviour
         else
         {
             //Schneide Strahl mit allen Objekten und ermittle nächstgelegenen Schnittpunkt;
-            if(intersectObjects(null, cameraRT.getPosition(), ray, color) > 0) {
+            if(intersectObjects(null, ray, color) > 0) {
                 return color = Color.white;
             } else {
                 return color = Color.black; //if kein Schnittpunkt { Col=background; return}
@@ -71,7 +72,7 @@ public class Raytracer : MonoBehaviour
         }
     }
 
-    private double intersectObjects(GeometryObject obj, Vector3 pos, Vector3 dir, Color col)
+    private double intersectObjects(GeometryObject obj, Ray ray, Color col)
     {
         GeometryObject hitObject = null;
         double s, ss;
@@ -88,7 +89,7 @@ public class Raytracer : MonoBehaviour
             /* special check used for reflections */
             if (anObj != obj) /* don't try source object */
             {
-                s = anObj.intersect(pos,dir); // Check intersaction
+                s = anObj.intersect(ray); // Check intersaction
                 /* keep track of closest intersection */
                 if ((s > 0.0) && (s <= ss))
                 {
@@ -103,7 +104,7 @@ public class Raytracer : MonoBehaviour
         }
 
         /* find point of intersection */
-        hit = pos + dir * (float)ss;
+        hit = ray.origin + ray.direction * (float)ss;
 
         /* find normal */
         normal = hitObject.normalizeVector(hit);
@@ -113,10 +114,6 @@ public class Raytracer : MonoBehaviour
 
         //Shade(hit, ray, normal, *anObjectHit, color);
         return ss;
-    }
-
-    private bool intersectWithUnityRay() {
-        return true;
     }
 
     // draws the picture
