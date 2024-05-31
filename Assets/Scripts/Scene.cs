@@ -40,6 +40,6 @@ public class Scene
 
     private Vector3 generateRandomPosition()
     {
-        return new Vector3(Random.Range(-(Screen.width/2), Screen.width/2), Random.Range(-(Screen.height/2), Screen.height/2), Random.Range(0, depth));
+        return new Vector3(Random.Range(-(resolutionX/2), resolutionX/2), Random.Range(-(resolutionY/2), resolutionY/2), Random.Range(0, depth));
     }
 }
