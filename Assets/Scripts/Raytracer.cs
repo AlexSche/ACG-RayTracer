@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -14,15 +15,16 @@ public class Raytracer : MonoBehaviour
     void Start()
     {
         cameraRT = GetComponent<CameraRT>();
-        resolutionX = cameraRT.resXinPixel;
-        resolutionY = cameraRT.resYinPixel;
+        resolutionX = cameraRT.getWidth();
+        resolutionY = cameraRT.getHeight();
         rendererTexture = new Texture2D(resolutionX, resolutionY);
-        scene = new Scene(resolutionX, resolutionY, cameraRT.depth, 10);
+        scene = new Scene(resolutionX, resolutionY, cameraRT.getDepth(), 10);
         calculatePicture();
     }
 
     void calculatePicture()
     {
+        DateTime before = DateTime.Now;
         for (int x = 0; x < Screen.width; x++)
         {
             for (int y = 0; y < Screen.height; y++)
@@ -34,6 +36,9 @@ public class Raytracer : MonoBehaviour
                 rendererTexture.SetPixel(x, y, color);
             }
         }
+        DateTime after = DateTime.Now;
+        TimeSpan duration = after.Subtract(before);
+        Debug.Log("Raytracer calculation in milliseconds: " + duration.Milliseconds);
         rendererTexture.Apply();
     }
 
@@ -47,7 +52,7 @@ public class Raytracer : MonoBehaviour
         else
         {
             //Schneide Strahl mit allen Objekten und ermittle nächstgelegenen Schnittpunkt;
-            if(intersectObjects(null, cameraRT.position, ray, color) > 0) {
+            if(intersectObjects(null, cameraRT.getPosition(), ray, color) > 0) {
                 return color = Color.white;
             } else {
                 return color = Color.black; //if kein Schnittpunkt { Col=background; return}

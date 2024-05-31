@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class CameraRT : MonoBehaviour
 {
-    public int resXinPixel;
-    public int resYinPixel;
-    public int depth;
+    private int resXinPixel;
+    private int resYinPixel;
+    private int depth;
     private Vector3 up; // Orientierung der Kamera
-    public Vector3 position; // Vorlesung Variable e - Kameraort
+    private Vector3 position; // Vorlesung Variable e - Kameraort
     private Vector3 centerOfCanvas; // Vorlesung Variable l - Mittelpunkt der Bildebenenmitte
     private Vector3 camToCenterOfCanvas; // Vorlesung Variable g - Vektor von Kamera nach Bildebenenmitte
     private Vector3 firstRay; // Vorlesung Variable f - erster Strahl durch Bildebene
@@ -82,5 +82,21 @@ public class CameraRT : MonoBehaviour
         Debug.DrawLine(centerOfCanvas, centerOfCanvas + scrny, Color.green, 10f);
         // first ray
         Debug.DrawLine(position, position + firstRay, Color.yellow, 20f);
+    }
+
+    public int getWidth() {
+        return resXinPixel;
+    }
+
+    public int getHeight() {
+        return resYinPixel;
+    }
+
+    public Vector3 getPosition() {
+        return position;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 }
