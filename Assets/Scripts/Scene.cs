@@ -32,6 +32,7 @@ public class Scene
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphere.transform.position = position;
         sphere.transform.localScale *= 50;
+        sphere.AddComponent<SphereCollider>();
         objectStorage.addObject(sphere);
     }
 

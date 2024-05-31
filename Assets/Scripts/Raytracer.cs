@@ -1,10 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class Raytracer : MonoBehaviour
 {
     private CameraRT cameraRT;
+    private Scene scene;
     private Texture2D rendererTexture;
     private int maxDepth = 2;
     private int resolutionX = 0;
@@ -15,7 +17,7 @@ public class Raytracer : MonoBehaviour
         resolutionX = cameraRT.resXinPixel;
         resolutionY = cameraRT.resYinPixel;
         rendererTexture = new Texture2D(resolutionX, resolutionY);
-        Scene scene = new Scene(resolutionX, resolutionY, cameraRT.depth, 150);
+        scene = new Scene(resolutionX, resolutionY, cameraRT.depth, 150);
         calculatePicture();
     }
 
@@ -61,6 +63,51 @@ public class Raytracer : MonoBehaviour
         }
     }
 
+    private double intersectObjects(Object obj, Vector3 pos, Vector3 dir, Color col)
+    {
+        Object hitObject = null;
+        double s, ss;
+        Vector3 hit, normal;
+        ss = (double)1E20; //FAR_AWAY
+
+        ObjectStorage objectStorage = scene.objectStorage;
+
+        /* check ray intersection with all objects */
+        objectStorage.objects.ForEach(anObj => {
+            if (anObj == null) {
+                return;
+            }
+            /* special check used for reflections */
+            if (anObj != obj) /* don't try source object */
+            {
+                //s = anObj->Intersect(pos, ray); // Check intersaction
+                s = 0;
+                /* keep track of closest intersection */
+                if ((s > 0.0) && (s <= ss))
+                {
+                    hitObject = anObj;
+                    ss = s;
+                }
+            }
+        });
+
+        if (hitObject == null) {
+            return 0; /* ray hit no objects */
+        }
+
+        /* find point of intersection */
+        //hit = pos + dir * ss;
+
+        /* find normal */
+        //normal = hitObject->NormVector(hit);
+
+        /* find color at point of intersection */
+        col = Color.white;
+        //Shade(hit, ray, normal, *anObjectHit, color);
+
+        return (ss);
+    }
+
     private Color testraytracer(Vector3 ray)
     {
         //if ray hits something
@@ -74,8 +121,9 @@ public class Raytracer : MonoBehaviour
         }
     }
 
-    // draw the picture
-    private void OnGUI() {
+    // draws the picture
+    private void OnGUI()
+    {
         GUI.DrawTexture(new Rect(0, 0, resolutionX, resolutionY), rendererTexture);
     }
 }
