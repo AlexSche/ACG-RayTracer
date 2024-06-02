@@ -86,12 +86,10 @@ public class Raytracer : MonoBehaviour
         GeometryObject hitObject = null;
         double s, ss;
         Vector3 hit, normal;
-        ss = (double)1E20; //FAR_AWAY
-
-        GeometryObjectStorage objectStorage = scene.geometryObjectStorage;
+        ss = double.MaxValue;
 
         /* check ray intersection with all objects */
-        objectStorage.objects.ForEach(anObj =>
+        scene.geometryObjectStorage.objects.ForEach(anObj =>
         {
             if (anObj == null)
             {
@@ -110,22 +108,22 @@ public class Raytracer : MonoBehaviour
             }
         });
 
-        if (hitObject == null)
+        if (hitObject == null) // ray hit no object
         {
-            return 0; /* ray hit no objects */
+            return 0;
         }
-
-        /* find point of intersection */
-        hit = ray.origin + ray.direction * (float)ss;
-
-        /* find normal */
-        normal = hitObject.normalizeVector(hit);
-
-        /* find color at point of intersection */
-        col = Color.white;
-
-        //Shade(hit, ray, normal, *anObjectHit, color);
-        return ss;
+        else // ray hit an object
+        {
+            /* find point of intersection */
+            hit = ray.origin + ray.direction * (float)ss;
+            /* find normal */
+            normal = hitObject.normalizeVector(hit);
+            
+            // calculate color for point of intersection
+            col = hitObject.getColorAtIntersection(Scene.Instance.lightning, ray);           
+            //Shade(hit, ray, normal, *anObjectHit, color);
+            return ss;
+        }
     }
 
     // draws the picture

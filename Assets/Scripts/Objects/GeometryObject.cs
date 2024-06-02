@@ -8,4 +8,8 @@ public class GeometryObject
     public virtual Vector3 normalizeVector(Vector3 pos) {
         return new Vector3(0,0,0);
     }
+
+    public virtual Color getColorAtIntersection(Lightning lightning, Ray ray) {
+        return Color.white;
+    }
 }

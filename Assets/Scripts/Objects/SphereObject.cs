@@ -46,6 +46,10 @@ public class SphereObject : GeometryObject
         return (pos - sphere.transform.position) / (float)radius;
     }
 
+    public override Color getColorAtIntersection(Lightning lightning, Ray ray) {
+        return Color.white;
+    }
+
     public void createPrimitive()
     {
         sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
