@@ -57,10 +57,19 @@ public class SphereObject : GeometryObject
         }
         else
         {
-            // calculate color for this pixel
-            //lightRay = lightRay.normalized;
-            // Cr,i=Ar,i+(Dr,i*IL*(N.L)+Sr,i*IL*(R.V)ni)+ks,i*Cr,j
-            return Color.white;
+            //calculate color for this pixel with Phong
+            //"Im Phong-Beleuchtungsmodell wird die Reflexion von Licht als Kombination aus ambienter, ideal diffuser und ideal spiegelnder Reflexion beschrieben. "
+            // Iout = Iambient + Idiffuse + Ispecular
+            // calculate ambient light - Iambient = Ia*kambient
+            Color ambientLight = lightning.getAmbientLight();
+            // calculate diffuse light - Idiffuse = Iin * kdiffuse * (L dot N)
+            Color diffuseColor = Color.green;
+            float kdiffuse = Vector3.Dot(RayThatHit.direction, lightRay.direction.normalized);
+            Color diffuseLight = diffuseColor * lightning.getLightColor() * lightning.getLightIntensity() * kdiffuse;
+            // calculate specular light - Ispecular = Iin * kspecular * (R dot V)
+            
+            Color phong = ambientLight * diffuseLight;
+            return phong;
         }
     }
 

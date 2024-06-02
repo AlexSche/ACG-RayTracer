@@ -3,6 +3,7 @@ using UnityEngine;
 public class Lightning
 {
     private GameObject lightGameObject;
+    private Light lightComp;
     private float brightness;
     private float distanceToLight;
     public float Brightness { get => brightness; set => brightness = value; }
@@ -10,7 +11,7 @@ public class Lightning
     public Lightning(Vector3 lightPos)
     {
         lightGameObject = new GameObject("Lightning");
-        Light lightComp = lightGameObject.AddComponent<Light>();
+        lightComp = lightGameObject.AddComponent<Light>();
         lightGameObject.transform.position = lightPos;
     }
 
@@ -43,5 +44,19 @@ public class Lightning
             }
         }
         return false;
+    }
+
+    public Color getAmbientLight() {
+        Color ambientColor = RenderSettings.ambientLight; //Intensität des Umgebungslichts - Ia
+        float ambientIntensity = RenderSettings.ambientIntensity; //Materialkonstante - kambient
+        return ambientColor * ambientIntensity;
+    }
+
+    public Color getLightColor() {
+        return lightComp.color;
+    }
+
+    public float getLightIntensity() {
+        return lightComp.intensity;
     }
 }

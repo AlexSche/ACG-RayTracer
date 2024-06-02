@@ -2,8 +2,12 @@ using UnityEngine;
 public class GeometryObject
 {
     private Vector3 intersectionPoint;
-    public Vector3 IntersectionPoint { get => intersectionPoint; set => intersectionPoint = value; }    
+    private Ray rayThatHit;
+    public Vector3 IntersectionPoint { get => intersectionPoint; set => intersectionPoint = value; }
+    public Ray RayThatHit { get => rayThatHit; set => rayThatHit = value; }
+
     public virtual double intersect(Ray ray) {
+        RayThatHit = ray;
         return 0.0;
     }
 
