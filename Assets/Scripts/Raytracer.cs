@@ -18,28 +18,34 @@ public class Raytracer : MonoBehaviour
         resolutionX = cameraRT.getWidth();
         resolutionY = cameraRT.getHeight();
         rendererTexture = new Texture2D(resolutionX, resolutionY);
-        scene = new Scene(resolutionX, resolutionY, cameraRT.getDepth(), 10);
+        Scene.createScene(resolutionX, resolutionY, cameraRT.getDepth(), 10);
+        scene = Scene.Instance;
         calculatePicture();
     }
 
     void calculatePicture()
     {
-        DateTime before = DateTime.Now;
+        DateTime before = DateTime.Now; // duration variable
         for (int x = 0; x < Screen.width; x++)
         {
-            for (int y = 0; y < Screen.height; y++)
+            for (int y = 0; y < Screen.height; y++) // for every pixel
             {
+                // calculate the direction from the camera to the pixel
                 Vector3 direction = cameraRT.calculateRayForPoint(new Point(x, y));
                 Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + direction, Color.cyan, 300f);
                 direction = Vector3.Normalize(direction);
                 Ray ray = new Ray(cameraRT.getPosition(), direction);
-                Color color = raytrace(ray,0,Color.black);
+                // raytrace the pixel (returns the color for this pixel)
+                Color color = raytrace(ray, 0, Color.black);
+                // set the color on this pixel
                 rendererTexture.SetPixel(x, y, color);
             }
         }
+        #region Duration of execution
         DateTime after = DateTime.Now;
         TimeSpan duration = after.Subtract(before);
         Debug.Log("Raytracer calculation in milliseconds: " + duration.Milliseconds);
+        #endregion
         rendererTexture.Apply();
     }
 
@@ -53,9 +59,12 @@ public class Raytracer : MonoBehaviour
         else
         {
             //Schneide Strahl mit allen Objekten und ermittle nächstgelegenen Schnittpunkt;
-            if(intersectObjects(null, ray, color) > 0) {
+            if (intersectObjects(null, ray, color) > 0)
+            {
                 return color = Color.white;
-            } else {
+            }
+            else
+            {
                 return color = Color.black; //if kein Schnittpunkt { Col=background; return}
             }
             /*
@@ -82,8 +91,10 @@ public class Raytracer : MonoBehaviour
         GeometryObjectStorage objectStorage = scene.geometryObjectStorage;
 
         /* check ray intersection with all objects */
-        objectStorage.objects.ForEach(anObj => {
-            if (anObj == null) {
+        objectStorage.objects.ForEach(anObj =>
+        {
+            if (anObj == null)
+            {
                 return;
             }
             /* special check used for reflections */
@@ -99,7 +110,8 @@ public class Raytracer : MonoBehaviour
             }
         });
 
-        if (hitObject == null) {
+        if (hitObject == null)
+        {
             return 0; /* ray hit no objects */
         }
 
