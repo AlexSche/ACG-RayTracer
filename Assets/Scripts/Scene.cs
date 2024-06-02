@@ -10,8 +10,8 @@ public sealed class Scene
     private int resolutionX = 640;
     private int resolutionY = 480;
     private int depth = 0;
-    private Transform transform;
     public GeometryObjectStorage geometryObjectStorage;
+    public Lightning lightning;
 
     static Scene() {
     }
@@ -22,6 +22,7 @@ public sealed class Scene
         this.amountOfObjects = amountOfObjects;
         this.depth = depth;
         geometryObjectStorage = new GeometryObjectStorage();
+        lightning = new Lightning(new Vector3(resX, resY, depth));
         createObjects();
     }
 
@@ -54,11 +55,6 @@ public sealed class Scene
     {
         SphereObject sphereObject = new SphereObject(position);
         geometryObjectStorage.addObject(sphereObject);
-    }
-
-    private void addLightning()
-    {
-        // spawn lightning in the top left corner
     }
 
     private Vector3 generateRandomPosition()
