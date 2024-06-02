@@ -46,8 +46,22 @@ public class SphereObject : GeometryObject
         return (pos - sphere.transform.position) / (float)radius;
     }
 
-    public override Color getColorAtIntersection(Lightning lightning, Ray ray) {
-        return Color.white;
+    public override Color getColorAtIntersection(Lightning lightning, Ray ray)
+    {
+        Vector3 lightDir = lightning.getDirectionToLightning(IntersectionPoint);
+        Ray lightRay = new Ray(IntersectionPoint, lightDir);
+        if (lightning.lightningRayGetsIntersected(this, lightRay))
+        {
+            // shadow since there is an object in the way
+            return Color.grey;
+        }
+        else
+        {
+            // calculate color for this pixel
+            //lightRay = lightRay.normalized;
+            // Cr,i=Ar,i+(Dr,i*IL*(N.L)+Sr,i*IL*(R.V)ni)+ks,i*Cr,j
+            return Color.white;
+        }
     }
 
     public void createPrimitive()

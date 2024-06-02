@@ -32,7 +32,7 @@ public class Raytracer : MonoBehaviour
             {
                 // calculate the direction from the camera to the pixel
                 Vector3 direction = cameraRT.calculateRayForPoint(new Point(x, y));
-                Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + direction, Color.cyan, 300f);
+                //Debug.DrawLine(cameraRT.transform.position, cameraRT.transform.position + direction, Color.cyan, 300f);
                 direction = Vector3.Normalize(direction);
                 Ray ray = new Ray(cameraRT.getPosition(), direction);
                 // raytrace the pixel (returns the color for this pixel)
@@ -51,25 +51,28 @@ public class Raytracer : MonoBehaviour
 
     private Color raytrace(Ray ray, int depth, Color color)
     {
+        GeometryObject hitObject;
         if (depth > maxDepth)
         {
             return color = Color.black;
-            //return;
         }
         else
         {
-            //Schneide Strahl mit allen Objekten und ermittle nächstgelegenen Schnittpunkt;
-            if (intersectObjects(null, ray, color) > 0)
+            // Intersect with all objects and find the closest object with his intersection point
+            hitObject = intersectObjects(null, ray);
+            if (hitObject != null && Vector3.Magnitude(hitObject.IntersectionPoint) > 0)
             {
-                return color = Color.white;
+                Debug.DrawRay(ray.origin, ray.direction, Color.white, 200f);
+                return color = hitObject.getColorAtIntersection(Scene.Instance.lightning, ray); // calculate color for intersection point
             }
             else
             {
-                return color = Color.black; //if kein Schnittpunkt { Col=background; return}
+                return color = Color.black; // if no intersection return black;
             }
             /*
-            else
-            {
+            if (hitObject == null) {
+                return color = Color.black;
+            } else {
             LocalColor=Farbe aus lokalem Beleuchtungmodell (Phong);
             Ermittle ideal reflektierten Strahl;
             Raytrace(ideal reflektierter Strahl, Depth+1, ReflCol);
@@ -81,7 +84,59 @@ public class Raytracer : MonoBehaviour
         }
     }
 
-    private double intersectObjects(GeometryObject obj, Ray ray, Color col)
+    private GeometryObject intersectObjects(GeometryObject obj, Ray ray)
+    {
+        GeometryObject hitObject = null;
+        double distance, maxDistance;
+        maxDistance = double.MaxValue;
+
+        // check ray intersection with all objects in storage
+        scene.geometryObjectStorage.objects.ForEach(anObj =>
+        {
+            if (anObj == null)
+            {
+                return;
+            }
+            if (anObj != obj)
+            {
+                distance = anObj.intersect(ray); // Check intersection
+                // keep track of closest intersection
+                if ((distance > 0.0) && (distance <= maxDistance))
+                {
+                    hitObject = anObj;
+                    maxDistance = distance;
+                }
+            }
+        });
+
+        if (hitObject == null) // ray hit no object
+        {
+            return null;
+        }
+        else // ray hit an object
+        {
+            // set point of intersection
+            hitObject.IntersectionPoint = ray.origin + ray.direction * (float)maxDistance;
+            /*
+            find normal -> Why do I have to find normal here?
+            normal = hitObject.normalizeVector(hit);
+            */
+            return hitObject;
+        }
+    }
+
+    private Color calculateColorForIntersection(GeometryObject hitObject, Ray ray)
+    {
+        return hitObject.getColorAtIntersection(Scene.Instance.lightning, ray);
+    }
+
+    // draws the picture
+    private void OnGUI()
+    {
+        GUI.DrawTexture(new Rect(0, 0, resolutionX, resolutionY), rendererTexture);
+    }
+
+    private double calculateIntersectionAndLightning(GeometryObject obj, Ray ray, Color col)
     {
         GeometryObject hitObject = null;
         double s, ss;
@@ -116,20 +171,13 @@ public class Raytracer : MonoBehaviour
         {
             /* find point of intersection */
             hit = ray.origin + ray.direction * (float)ss;
-            /* find normal */
             normal = hitObject.normalizeVector(hit);
-            
+
             // calculate color for point of intersection
-            col = hitObject.getColorAtIntersection(Scene.Instance.lightning, ray);           
+            col = hitObject.getColorAtIntersection(Scene.Instance.lightning, ray);
             //Shade(hit, ray, normal, *anObjectHit, color);
             return ss;
         }
-    }
-
-    // draws the picture
-    private void OnGUI()
-    {
-        GUI.DrawTexture(new Rect(0, 0, resolutionX, resolutionY), rendererTexture);
     }
 }
 
