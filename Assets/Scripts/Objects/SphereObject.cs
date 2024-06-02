@@ -67,8 +67,13 @@ public class SphereObject : GeometryObject
             float kdiffuse = Vector3.Dot(RayThatHit.direction, lightRay.direction.normalized);
             Color diffuseLight = diffuseColor * lightning.getLightColor() * lightning.getLightIntensity() * kdiffuse;
             // calculate specular light - Ispecular = Iin * kspecular * (R dot V)
-            
-            Color phong = ambientLight * diffuseLight;
+            Color specularColor = Color.yellow;
+            //float shine = 0.4f;
+            int exponent = 3;
+            var RdotV = Vector3.Dot(lightRay.direction.normalized, (lightDir + RayThatHit.direction).normalized);
+            var specTerm = Mathf.Pow(RdotV, exponent) * (exponent + 2)/(2*MathF.PI);
+            Color specularLight = specularColor * lightning.getLightColor() * lightning.getLightIntensity() * specTerm;
+            Color phong = ambientLight * diffuseLight * specularLight;
             return phong;
         }
     }
