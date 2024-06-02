@@ -22,8 +22,8 @@ public sealed class Scene
         this.amountOfObjects = amountOfObjects;
         this.depth = depth;
         geometryObjectStorage = new GeometryObjectStorage();
-        lightning = new Lightning(new Vector3(resX, resY, depth));
         createObjects();
+        createLightningOnPosition(new Vector3(resX, resY, depth));
     }
 
     public static Scene Instance {
@@ -55,6 +55,10 @@ public sealed class Scene
     {
         SphereObject sphereObject = new SphereObject(position);
         geometryObjectStorage.addObject(sphereObject);
+    }
+
+    private void createLightningOnPosition(Vector3 position) {
+        lightning = new Lightning(position);
     }
 
     private Vector3 generateRandomPosition()
