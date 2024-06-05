@@ -5,11 +5,9 @@ public class SphereObject : GeometryObject
 {
     private GameObject sphere;
     private double radius;
-    //private Vector3 position;
 
     public SphereObject(Vector3 position)
     {
-        //this.position = position;
         createPrimitive();
         sphere.transform.position = position;
         sphere.transform.localScale *= 20;
@@ -41,15 +39,23 @@ public class SphereObject : GeometryObject
         return 0.0; /* both solutions <= zero */
     }
 
-    public override Vector3 normalizeVector(Vector3 pos)
+    public override Vector3 getNormVector(Vector3 pos)
     {
         return (pos - sphere.transform.position) / (float)radius;
     }
 
+    public override Ray getReflectedRay(Ray ray)
+    {
+        Vector3 reflectedDirection = ray.direction;
+        Vector3 norm = getNormVector(IntersectionPoint);
+        double k = -2.0 * Vector3.Dot(ray.direction, norm);
+        reflectedDirection = norm * (float)k + ray.direction;
+        return new Ray(IntersectionPoint, reflectedDirection);
+    }
+
     public override Color getColorAtIntersection(Lightning lightning, Ray ray)
     {
-        Vector3 lightDir = lightning.getDirectionToLightning(IntersectionPoint);
-        Ray lightRay = new Ray(IntersectionPoint, lightDir);
+        Ray lightRay = getLightningRay(lightning, ray);
         if (lightning.lightningRayGetsIntersected(this, lightRay))
         {
             // shadow since there is an object in the way
@@ -70,7 +76,7 @@ public class SphereObject : GeometryObject
             Color specularColor = Color.yellow;
             //float shine = 0.4f;
             int exponent = 3;
-            var RdotV = Vector3.Dot(lightRay.direction.normalized, (lightDir + RayThatHit.direction).normalized);
+            var RdotV = Vector3.Dot(lightRay.direction.normalized, (lightRay.direction + RayThatHit.direction).normalized);
             var specTerm = Mathf.Pow(RdotV, exponent) * (exponent + 2)/(2*MathF.PI);
             Color specularLight = specularColor * lightning.getLightColor() * lightning.getLightIntensity() * specTerm;
             Color phong = ambientLight * diffuseLight * specularLight;

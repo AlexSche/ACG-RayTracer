@@ -26,9 +26,9 @@ public class Raytracer : MonoBehaviour
     void calculatePicture()
     {
         DateTime before = DateTime.Now; // duration variable
-        for (int x = 0; x < Screen.width; x++)
+        for (int x = 0; x < resolutionX; x++)
         {
-            for (int y = 0; y < Screen.height; y++) // for every pixel
+            for (int y = 0; y < resolutionY; y++) // for every pixel
             {
                 // calculate the direction from the camera to the pixel
                 Vector3 direction = cameraRT.calculateRayForPoint(new Point(x, y));
@@ -38,7 +38,7 @@ public class Raytracer : MonoBehaviour
                 // raytrace the pixel (returns the color for this pixel)
                 Color color = raytrace(ray, 0, Color.black);
                 // set the color on this pixel
-                rendererTexture.SetPixel(x, y, color);
+                rendererTexture.SetPixel(x, resolutionY - y, color); // unity's texture starts bottom-left (Hannah Schweizer Bugfix)
             }
         }
         #region Duration of execution
@@ -54,130 +54,34 @@ public class Raytracer : MonoBehaviour
         GeometryObject hitObject;
         if (depth > maxDepth)
         {
-            return color = Color.black;
+            return color;
         }
         else
         {
             // Intersect with all objects and find the closest object with his intersection point
-            hitObject = intersectObjects(null, ray);
-            if (hitObject != null && Vector3.Magnitude(hitObject.IntersectionPoint) > 0)
-            {
-                Debug.DrawRay(ray.origin, ray.direction, Color.white, 200f);
-                return color = hitObject.getColorAtIntersection(Scene.Instance.lightning, ray); // calculate color for intersection point
-            }
-            else
-            {
-                return color = Color.black; // if no intersection return black;
-            }
-            /*
+            hitObject = GeometryObject.intersectObjects(null, ray,scene);
             if (hitObject == null) {
-                return color = Color.black;
+                return color;
             } else {
-            LocalColor=Farbe aus lokalem Beleuchtungmodell (Phong);
-            Ermittle ideal reflektierten Strahl;
-            Raytrace(ideal reflektierter Strahl, Depth+1, ReflCol);
-            Ermittle ideal transmittierten Strahl;
-            Raytrace(ideal transmittierter Strahl, Depth+1, TransCol);
-            Kombiniere(Col, ReflCol, TransCol);
+            //Debug.DrawRay(ray.origin, ray.direction, Color.white, 200f);
+            color = hitObject.getColorAtIntersection(Scene.Instance.lightning, ray); // LocalColor=Farbe aus lokalem Beleuchtungmodell (Phong);
+            Ray reflectedRay = hitObject.getReflectedRay(ray); // Ermittle ideal reflektierten Strahl; Einfallswinkel = Ausfallwinkel
+            Color reflectedColor = color;
+            color = raytrace(reflectedRay, depth + 1, reflectedColor); // Raytrace(ideal reflektierter Strahl, Depth+1, ReflCol);
+            Color transmittedColor = color;
+            Ray lightRay = hitObject.getLightningRay(Scene.Instance.lightning, ray); // Strahl zur Lichtquelle
+            Ray transmittedRay = hitObject.getReflectedRay(lightRay); // Ermittle ideal transmittierten Strahl; Ausfallwinkel des Schattenstrahl (Strahl zur Lichtquelle)
+            color = raytrace(transmittedRay, depth + 1, transmittedColor); // Raytrace(ideal transmittierter Strahl, Depth+1, TransCol);     
+            color = color + reflectedColor + transmittedColor; //Kombiniere(Col, ReflCol, TransCol);
+            return color;
             }
-            */
         }
-    }
-
-    private GeometryObject intersectObjects(GeometryObject obj, Ray ray)
-    {
-        GeometryObject hitObject = null;
-        double distance, maxDistance;
-        maxDistance = double.MaxValue;
-
-        // check ray intersection with all objects in storage
-        scene.geometryObjectStorage.objects.ForEach(anObj =>
-        {
-            if (anObj == null)
-            {
-                return;
-            }
-            if (anObj != obj)
-            {
-                distance = anObj.intersect(ray); // Check intersection
-                // keep track of closest intersection
-                if ((distance > 0.0) && (distance <= maxDistance))
-                {
-                    hitObject = anObj;
-                    maxDistance = distance;
-                }
-            }
-        });
-
-        if (hitObject == null) // ray hit no object
-        {
-            return null;
-        }
-        else // ray hit an object
-        {
-            // set point of intersection
-            hitObject.IntersectionPoint = ray.origin + ray.direction * (float)maxDistance;
-            /*
-            find normal -> Why do I have to find normal here?
-            normal = hitObject.normalizeVector(hit);
-            */
-            return hitObject;
-        }
-    }
-
-    private Color calculateColorForIntersection(GeometryObject hitObject, Ray ray)
-    {
-        return hitObject.getColorAtIntersection(Scene.Instance.lightning, ray);
     }
 
     // draws the picture
     private void OnGUI()
     {
         GUI.DrawTexture(new Rect(0, 0, resolutionX, resolutionY), rendererTexture);
-    }
-
-    private double calculateIntersectionAndLightning(GeometryObject obj, Ray ray, Color col)
-    {
-        GeometryObject hitObject = null;
-        double s, ss;
-        Vector3 hit, normal;
-        ss = double.MaxValue;
-
-        /* check ray intersection with all objects */
-        scene.geometryObjectStorage.objects.ForEach(anObj =>
-        {
-            if (anObj == null)
-            {
-                return;
-            }
-            /* special check used for reflections */
-            if (anObj != obj) /* don't try source object */
-            {
-                s = anObj.intersect(ray); // Check intersaction
-                /* keep track of closest intersection */
-                if ((s > 0.0) && (s <= ss))
-                {
-                    hitObject = anObj;
-                    ss = s;
-                }
-            }
-        });
-
-        if (hitObject == null) // ray hit no object
-        {
-            return 0;
-        }
-        else // ray hit an object
-        {
-            /* find point of intersection */
-            hit = ray.origin + ray.direction * (float)ss;
-            normal = hitObject.normalizeVector(hit);
-
-            // calculate color for point of intersection
-            col = hitObject.getColorAtIntersection(Scene.Instance.lightning, ray);
-            //Shade(hit, ray, normal, *anObjectHit, color);
-            return ss;
-        }
     }
 }
 
